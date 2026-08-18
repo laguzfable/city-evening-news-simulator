@@ -918,10 +918,19 @@ renderCibBank();renderKeywordList();renderCustomSeedLibrary();updateEditorStats(
 if(status){status.className='webUpdateStatus';status.innerHTML='資料庫完成！整理 '+items.length+' 篇（本次新抓 '+(data.newFetched||0)+'、快取 '+(data.cached||0)+'），新增 '+addedCases+' 組代表母案、'+newWords+' 個去重關鍵字'+(data.failed?'；另有 '+data.failed+' 篇暫時抓取失敗':'')+'。內容已直接進入生成池。'}
 }).catch(function(e){if(status){status.style.display='block';status.className='webUpdateStatus error';status.innerHTML='擴充失敗：'+esc(e.message)+'。原有素材完全保留，稍後可直接重試。'}}).then(function(){if(btn){btn.disabled=false;btn.innerHTML='再次擴充素材'}})
 };
+var witnessOccupationPool=[
+'附近早餐店員工','超商大夜班店員','飲料店店長','市場豬肉攤商','市場蔬果攤商','夜市小吃攤老闆','計程車司機','多元計程車駕駛','外送員','宅配司機',
+'貨運司機','公車司機','公車站務人員','捷運站務人員','停車場管理員','社區夜班保全','商場保全','大樓管理員','清潔隊員','道路清潔人員',
+'資源回收業者','水電工','冷氣維修技師','瓦斯行送貨員','機車行技師','汽車修護員','輪胎行員工','工地監工','模板工人','油漆工',
+'房仲業務','旅館櫃檯人員','旅館房務員','餐廳外場人員','餐廳廚師','咖啡店店員','麵攤老闆','便當店員工','麵包店師傅','藥局店員',
+'診所護理師','照服員','居家清潔人員','幼兒園接送員','補習班老師','學生家長','學校警衛','郵差','里辦公處幹事','寺廟工作人員',
+'檳榔攤店員','彩券行老闆','洗衣店老闆','自助洗衣店巡店員','美容院設計師','理髮店師傅','寵物美容師','遛狗民眾','晨運民眾','夜跑民眾',
+'附近住戶','樓上住戶','對面店家老闆','路邊停車駕駛','臨時搬運工','倉儲理貨員','超市收銀員','百貨專櫃人員','電信門市店員','銀行保全'
+];
 function contextualWitnessQuote(caseKey,l){
 var financial=/^(fraud|economic|laundering|ticket|gambling)$/.test(caseKey),violent=/^(homicide|attempt|injury|robbery|threat|firearms)$/.test(caseKey),stealing=/^(theft|snatch)$/.test(caseKey),scene=(l&&l.venue)||'現場';
 var starts=['我一開始以為只是有人在講電話','我剛好準備關門','我從對面走過來時','我在旁邊等紅燈時','我聽見聲音才回頭','我原本沒特別注意','我正要離開那一帶','我在門口整理東西時','我從巷口經過時','我看到有人突然停下來'];
-var actions,details,label='附近目擊者（虛構）';
+var actions,details,label='目擊者';
 if(violent){actions=['兩個人已經越講越大聲','其中一人一直逼近，另一人則往後退','雙方先在'+scene+'外拉扯了一陣子','有人伸手攔住對方，不讓人離開','其中一人突然從隨身物品裡拿出東西','兩人本來隔著一段距離，後來突然衝向對方','我聽到有人連續喊不要再靠近','其中一人繞到前面擋住去路','前面還只是在爭執，沒多久就有人倒地','有人先推了一下，現場馬上亂成一團','其中一人短暫離開後又折返回來','我看到旁邊的人開始往外退'];details=['整段衝突不到幾分鐘','旁邊有人立刻打電話報警','大家反應過來時已經有人受傷','現場的人一直叫他把東西放下','後來警車很快就到了','有人趕緊把其他路人拉開','地上散落的物品也是衝突後才出現','他離開時還回頭看了好幾次','另一人一直用手護著身體','聲音突然停下來後大家才敢靠近'];}
 else if(financial){label='附近店員（虛構）';actions=['那個人反覆確認手機上的通知','雙方一直核對帳號和付款資料','有人拿著好幾張單據來回比對','其中一人不斷催對方立刻操作轉帳','他們談到票券和付款時語氣變得很急','有人一直要求對方提供驗證碼','其中一人同時拿著兩支手機操作','他們在櫃台前反覆確認訂單姓名','有人一直問款項到底有沒有入帳','其中一人把多張卡片攤在桌上','他們談了很久，卻一直沒有完成交易','有人接連收到好幾通不同號碼的電話'];details=['後來店員覺得不對才上前詢問','對方被提醒後仍堅持要繼續操作','整個過程看起來不像一般消費','有人發現資料對不上才報警','其中一人發現帳戶異常後明顯慌了','店員聽到要交出密碼便立刻制止','警方到場後先查看手機與單據','雙方對付款方式的說法完全不同','他離開前還把部分紙張揉掉','現場最後留下不少交易資料'];}
 else if(stealing){actions=['有人一直盯著周圍人車','其中一人拿了東西後立刻快步離開','他在同一排貨架前來回走了好幾次','有人刻意用袋子擋住手上的動作','一輛車在附近沒有熄火，像是在等人','其中一人先確認店員的位置才靠近物品','有人拿走東西後立刻換了外套','他先繞到視線死角，沒多久就走出來','其中一人一直回頭看有沒有人跟著','他離開時手上的袋子明顯比進去時鼓'];details=['店家清點後才發現少了東西','監視器回放後動線才變得很清楚','失主追出去時人已經不見了','旁邊的人直到有人喊東西不見才注意','他走到路口後突然開始跑','現場有人記下了車牌的一部分','店員覺得動作不自然才通知保全','警方到場後先調閱出入口畫面','整個過程很快，前後不到幾分鐘','他曾短暫折返確認後方情況'];}
@@ -954,6 +963,7 @@ if(violent)details=[
 '其中一人最後被數名路人合力攔下','店家監視器剛好拍到衝突開始的瞬間','有人在警察抵達前持續向傷者喊話','現場留下的隨身物品後來交給警方','救護人員處理時警方同步疏散圍觀人群'
 ];
 var storageKey='witnessQuoteSeq.'+caseKey,seq=0;try{seq=parseInt(localStorage.getItem(storageKey)||'0',10)||0;localStorage.setItem(storageKey,String(seq+1))}catch(e){seq=Math.floor(Math.random()*100000)}
+label=witnessOccupationPool[(seq*11+caseKey.length)%witnessOccupationPool.length];
 return{text:'「'+starts[seq%starts.length]+'，'+actions[(seq*7+Math.floor(seq/actions.length))%actions.length]+'；'+details[(seq*13+Math.floor(seq/details.length))%details.length]+'。」',label:label};
 }
 window.generateCase=function(){
